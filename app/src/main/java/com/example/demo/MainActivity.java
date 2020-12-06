@@ -3,21 +3,62 @@ package com.example.demo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView listViewProduct;
-    private Adapter productListViewAdapter;
+   ArrayList<Product> listProduct;
+   ProductListViewAdapter productListViewAdapter;
+   ListView listViewProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listViewProduct = (ListView)findViewById(R.id.listProduct);
+        ////Khoi tao ListProduct
+        listProduct = new ArrayList<>();
+        listProduct.add(new Product(1, "Acemuc-100mg h/30", 53500));
+        listProduct.add(new Product(2, "Actapulgite h/30", 120000));
+        listProduct.add(new Product(3, "Actapulgite h/30", 75000));
+        listProduct.add(new Product(4, "Bioacimin Gold h/30 (10ptr)", 1370000));
+        listProduct.add(new Product(5, "Capot Relax 4in1 (đỏ) h/3", 10500));
+        listProduct.add(new Product(6, "Debridat  pháp", 17000));
+        listProduct.add(new Product(7, "Efferalgan-80mg (gói) h/12", 81000));
+        listProduct.add(new Product(8, "Fonroxyl-500mg h/30", 93000));
+
+        productListViewAdapter = new ProductListViewAdapter(listProduct);
+
+        listViewProduct = findViewById(R.id.listProduct);
         listViewProduct.setAdapter(productListViewAdapter);
-        adapter.notifyDataSetChanged();
+
+        //Lắng nghe bắt sự kiện một phần tử danh sách được chọn
+        listViewProduct.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Product product = (Product) productListViewAdapter.getItem(position);
+                //Làm gì đó khi chọn sản phẩm (ví dụ tạo một Activity hiện thị chi tiết, biên tập ..)
+                Toast.makeText(MainActivity.this, product.name, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listProduct.size() > 0) {
+                    //Xoá phần tử đầu tiên của danh sách
+                    int productpost = 0;
+                    listProduct.remove(productpost);
+                    //Thông báo cho ListView biết dữ liệu đã thay đổi (cập nhật, xoá ...)
+                    productListViewAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }
